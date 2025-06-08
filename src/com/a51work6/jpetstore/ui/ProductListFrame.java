@@ -26,6 +26,8 @@ import javax.swing.table.TableModel;
 import com.a51work6.jpetstore.dao.ProductDao;
 import com.a51work6.jpetstore.dao.mysql.ProductDaoImp;
 import com.a51work6.jpetstore.domain.Product;
+import javax.swing.BoxLayout;
+
 
 //商品列表窗口
 public class ProductListFrame extends MyFrame {
@@ -122,90 +124,99 @@ public class ProductListFrame extends MyFrame {
 
         JPanel rightPanel = new JPanel();
         rightPanel.setBackground(Color.WHITE);
+        rightPanel.setLayout(new BorderLayout());
 
-        rightPanel.setLayout(new GridLayout(2, 1, 0, 0));
-
+        // 商品图片面板
         lblImage = new JLabel();
-        rightPanel.add(lblImage);
         lblImage.setHorizontalAlignment(SwingConstants.CENTER);
+        JPanel imagePanel = new JPanel(new BorderLayout());
+        imagePanel.add(lblImage, BorderLayout.CENTER);
+        rightPanel.add(imagePanel, BorderLayout.NORTH);
+        imagePanel.setBackground(Color.WHITE);
 
+        // 商品详细信息面板
         JPanel detailPanel = new JPanel();
         detailPanel.setBackground(Color.WHITE);
-        rightPanel.add(detailPanel);
-        detailPanel.setLayout(new GridLayout(8, 1, 0, 5));
+        detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
 
         JSeparator separator_1 = new JSeparator();
         detailPanel.add(separator_1);
 
         lblListprice = new JLabel();
-        detailPanel.add(lblListprice);
-        // 设置字体
         lblListprice.setFont(new Font("微软雅黑", Font.PLAIN, 16));
+        detailPanel.add(lblListprice);
 
         lblUnitcost = new JLabel();
-        detailPanel.add(lblUnitcost);
-        // 设置字体
         lblUnitcost.setFont(new Font("微软雅黑", Font.PLAIN, 16));
+        detailPanel.add(lblUnitcost);
 
         lblDescn = new JLabel();
-        detailPanel.add(lblDescn);
-        // 设置字体
         lblDescn.setFont(new Font("微软雅黑", Font.PLAIN, 16));
+        detailPanel.add(lblDescn);
 
         JSeparator separator_2 = new JSeparator();
         detailPanel.add(separator_2);
 
+        // 按钮面板
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         JButton btnAdd = new JButton("添加到购物车");
         btnAdd.setFont(new Font("微软雅黑", Font.PLAIN, 15));
-        detailPanel.add(btnAdd);
-
-        // 布局占位使用
-        JLabel lb1 = new JLabel("");
-        detailPanel.add(lb1);
+        buttonPanel.add(btnAdd);
 
         JButton btnCheck = new JButton("查看购物车");
         btnCheck.setFont(new Font("微软雅黑", Font.PLAIN, 15));
-        detailPanel.add(btnCheck);
+        buttonPanel.add(btnCheck);
 
-        // 注册【添加到购物车】按钮的ActionEvent事件监听器
+        JButton btnPendingOrders = new JButton("待支付订单");
+        btnPendingOrders.setFont(new Font("微软雅黑", Font.PLAIN, 15));
+        buttonPanel.add(btnPendingOrders);
+
+        detailPanel.add(buttonPanel);
+
+        rightPanel.add(detailPanel, BorderLayout.CENTER);
+
+        // 添加按钮事件监听器
         btnAdd.addActionListener(e -> {
-
             if (selectedRow < 0) {
                 return;
             }
-            // 添加商品到购物车处理
             Product selectProduct = products.get(selectedRow);
             String productid = selectProduct.getProductid();
 
-            if (cart.containsKey(productid)) {// 购物车中已经有该商品
-                // 获得商品数量
+            if (cart.containsKey(productid)) {
                 Integer quantity = cart.get(productid);
                 cart.put(productid, ++quantity);
-            } else {// 购物车中还没有该商品
+            } else {
                 cart.put(productid, 1);
             }
 
             System.out.println(cart);
         });
 
-        // 注册【查看购物车】按钮的ActionEvent事件监听器
         btnCheck.addActionListener(e -> {
             CartFrame cartFrame = new CartFrame(cart, this);
             cartFrame.setVisible(true);
             setVisible(false);
         });
 
+        btnPendingOrders.addActionListener(e -> {
+            PendingOrderFrame pendingOrderFrame = new PendingOrderFrame(MainApp.accout.getUserid(), this);
+            pendingOrderFrame.setVisible(true);
+            setVisible(false);
+        });
+
         return rightPanel;
     }
+
 
     // 初始化左侧面板
     private JScrollPane getLeftPanel() {
 
         JScrollPane leftScrollPane = new JScrollPane();
-        // 将表格作为滚动面板的各个视口视图
         leftScrollPane.setViewportView(getTable());
         return leftScrollPane;
     }
+
 
     // 初始化左侧面板中的表格控件
     private JTable getTable() {
@@ -214,19 +225,21 @@ public class ProductListFrame extends MyFrame {
 
         if (table == null) {
             table = new JTable(model);
-            // 设置表中内容字体
             table.setFont(new Font("微软雅黑", Font.PLAIN, 16));
-            // 设置表列标题字体
             table.getTableHeader().setFont(new Font("微软雅黑", Font.BOLD, 16));
-            // 设置表行高
             table.setRowHeight(51);
             table.setRowSelectionAllowed(true);
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+            // 设置列宽
+            table.getColumnModel().getColumn(0).setPreferredWidth(150);
+            table.getColumnModel().getColumn(1).setPreferredWidth(100);
+            table.getColumnModel().getColumn(2).setPreferredWidth(200);
+            table.getColumnModel().getColumn(3).setPreferredWidth(200);
+
             ListSelectionModel rowSelectionModel = table.getSelectionModel();
 
             rowSelectionModel.addListSelectionListener(e -> {
-
-                //只处理鼠标释放
                 if (e.getValueIsAdjusting()) {
                     return;
                 }
@@ -236,7 +249,6 @@ public class ProductListFrame extends MyFrame {
                 if (selectedRow < 0) {
                     return;
                 }
-                // 更新右侧面板内容
                 Product p = products.get(selectedRow);
                 String petImage = String.format("/images/%s", p.getImage());
                 ImageIcon icon = new ImageIcon(ProductListFrame.class.getResource(petImage));
@@ -258,5 +270,6 @@ public class ProductListFrame extends MyFrame {
         }
         return table;
     }
+
 
 }
