@@ -2,6 +2,8 @@
 package com.a51work6.jpetstore.ui;
 
 import com.a51work6.jpetstore.domain.Account;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 
 //启动类
 public class MainApp {
@@ -11,6 +13,8 @@ public class MainApp {
 
     public static void main(String[] args) {
         LoginFrame frame = new LoginFrame();
+        ImageIcon icon = new ImageIcon(MainApp.class.getResource("/icons/appIcon.png"));
+        frame.setIconImage(icon.getImage());
         frame.setVisible(true);
     }
 

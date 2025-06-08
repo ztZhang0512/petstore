@@ -6,7 +6,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
-
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 //这是一个屏幕居中的自定义窗口
 public class MyFrame extends JFrame {
 
@@ -17,6 +18,12 @@ public class MyFrame extends JFrame {
 
     public MyFrame(String title, int width, int height) {
         super(title);
+
+        // 设置窗口图标
+        ImageIcon icon = new ImageIcon(MyFrame.class.getResource("/icons/appIcon.png"));
+        if (icon.getImage() != null) {
+            setIconImage(icon.getImage());
+        }
 
         // 设置窗口大小
         setSize(width, height);
