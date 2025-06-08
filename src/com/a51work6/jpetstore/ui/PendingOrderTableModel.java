@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class PendingOrderTableModel extends AbstractTableModel {
 
-    private String[] columnNames = {"订单编号", "状态", "下单时间", "金额", "操作"};
+    private String[] columnNames = {"订单编号", "状态", "下单时间", "金额", "付款", "操作"};
     private Object[][] data;
 
     public PendingOrderTableModel(Object[][] data) {
@@ -33,10 +33,18 @@ public class PendingOrderTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int row, int column) {
-        return column == 4; // 只有操作列可编辑
+        return column == 4 || column == 5; // 允许编辑付款和删除列
     }
 
     public void removeRow(int row) {
-        data[row][4] = "已删除";
+        Object[][] newData = new Object[data.length - 1][data[0].length];
+        int index = 0;
+        for (int i = 0; i < data.length; i++) {
+            if (i != row) {
+                newData[index++] = data[i];
+            }
+        }
+        data = newData;
+        fireTableDataChanged();
     }
 }

@@ -9,7 +9,7 @@ public interface OrderDao {
     // 查询所有的订单信息
     List<Order> findAll();
     // 根据主键查询订单信息
-    Order findById(int orderid);
+    Order findById(long orderid);
     // 创建订单信息
     int create(Order order);
     // 修改订单信息

@@ -103,13 +103,13 @@ public class OrderDaoImp implements OrderDao {
     }
 
     @Override
-    public Order findById(int orderid) {
+    public Order findById(long orderid) { // 改为 long
         String sql = "SELECT orderid, userid, orderdate, status, amount, isdel FROM orders WHERE orderid = ?";
         try (
                 Connection conn = DBHelper.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, orderid);
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setLong(1, orderid); // 使用 setLong
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -123,13 +123,13 @@ public class OrderDaoImp implements OrderDao {
 
                 return order;
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return null;
     }
+
 
     @Override
     public int modify(Order order) {
@@ -147,14 +147,14 @@ public class OrderDaoImp implements OrderDao {
 
             int affectedRows = pstmt.executeUpdate();
             System.out.printf("成功更新%d条数据。\n", affectedRows);
+            return affectedRows;
 
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }
-
-        return 0;
     }
+
 
 
     @Override
