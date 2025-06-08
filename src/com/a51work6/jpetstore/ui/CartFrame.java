@@ -65,18 +65,25 @@ public class CartFrame extends MyFrame {
 
         // 注册【提交订单】按钮的ActionEvent事件监听器
         btuSubmit.addActionListener(e -> {
-            // 生成订单
-            generateOrders();
-
             JLabel label = new JLabel("订单已经生成，等待付款。");
             label.setFont(new Font("微软雅黑", Font.PLAIN, 15));
-            if (JOptionPane.showConfirmDialog(this, label, "信息", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                // TODO 付款
-                System.exit(0);
+
+            int choice = JOptionPane.showConfirmDialog(this, label, "信息", JOptionPane.YES_NO_OPTION);
+
+            if (choice == JOptionPane.YES_OPTION) {
+                generateOrders(); // 只在用户确认时生成订单
+
+                PendingOrderFrame pendingOrderFrame = new PendingOrderFrame(MainApp.accout.getUserid(), productListFrame);
+                pendingOrderFrame.setVisible(true);
+                setVisible(false);
             } else {
-                System.exit(0);
+                // 用户选择否，不进行任何操作
             }
         });
+
+
+
+
 
         // 注册【返回商品列表】按钮的ActionEvent事件监听器
         btnReturn.addActionListener(e -> {
@@ -160,6 +167,26 @@ public class CartFrame extends MyFrame {
 
         return table;
     }
+
+    private void applyTableStyles(JTable table, TableModel model) {
+        table.setModel(model);
+
+        // 设置列居中
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+            renderer.setHorizontalAlignment(SwingConstants.CENTER);
+            table.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
+
+        // 设置“操作”列为蓝色字体
+        table.getColumnModel().getColumn(5).setCellRenderer((table1, value, isSelected, hasFocus, row, column) -> {
+            JLabel label = new JLabel(value.toString());
+            label.setForeground(Color.BLUE);
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            return label;
+        });
+    }
+
 
     // 刷新购物车数据
     private void updateCartFrame() {

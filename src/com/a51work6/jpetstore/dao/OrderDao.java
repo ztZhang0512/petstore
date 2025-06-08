@@ -17,4 +17,5 @@ public interface OrderDao {
     // 删除订单信息
     int remove(Order order);
 
+    List<Order> findPendingOrdersByUser(String userid);
 }

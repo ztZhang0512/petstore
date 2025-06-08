@@ -16,36 +16,62 @@ public class OrderDaoImp implements OrderDao {
 
     @Override
     public List<Order> findAll() {
-        String sql = "SELECT orderid, userid, orderdate, status, amount, isdel FROM orders";
+        String sql = "SELECT orderid, userid, orderdate, status, amount, isdel FROM orders WHERE isdel = 0";
         List<Order> orderList = new ArrayList<>();
 
         try (
-                // 2. 创建数据库连接
                 Connection conn = DBHelper.getConnection();
-                // 3. 创建语句对象
                 PreparedStatement pstmt = conn.prepareStatement(sql);
-                // 4. 绑定参数（无）
-                // 5. 执行查询（R）
-                ResultSet rs = pstmt.executeQuery()) {
-
-            // 6. 遍历结果集
+                ResultSet rs = pstmt.executeQuery();
+        ) {
             while (rs.next()) {
                 Order order = new Order();
-                order.setOrderid(rs.getInt("orderid"));
+                order.setOrderid(rs.getLong("orderid"));
                 order.setUserid(rs.getString("userid"));
                 order.setOrderdate(rs.getDate("orderdate"));
                 order.setStatus(rs.getInt("status"));
                 order.setAmount(rs.getDouble("amount"));
-                order.setIsdel(rs.getInt("isdel")); // 新增字段赋值
+                order.setIsdel(rs.getInt("isdel"));
 
                 orderList.add(order);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return orderList;
     }
+
+    @Override
+    public List<Order> findPendingOrdersByUser(String userid) {
+        String sql = "SELECT orderid, userid, orderdate, status, amount, isdel FROM orders WHERE userid = ? AND isdel = 0";
+        List<Order> orderList = new ArrayList<>();
+
+        try (
+                Connection conn = DBHelper.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setString(1, userid);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderid(rs.getLong("orderid"));
+                order.setUserid(rs.getString("userid"));
+                order.setOrderdate(rs.getDate("orderdate"));
+                order.setStatus(rs.getInt("status"));
+                order.setAmount(rs.getDouble("amount"));
+                order.setIsdel(rs.getInt("isdel"));
+
+                orderList.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return orderList;
+    }
+
 
     @Override
     public int create(Order order) {
@@ -88,7 +114,7 @@ public class OrderDaoImp implements OrderDao {
 
             if (rs.next()) {
                 Order order = new Order();
-                order.setOrderid(rs.getInt("orderid"));
+                order.setOrderid(rs.getLong("orderid"));
                 order.setUserid(rs.getString("userid"));
                 order.setOrderdate(rs.getDate("orderdate"));
                 order.setStatus(rs.getInt("status"));
@@ -136,19 +162,18 @@ public class OrderDaoImp implements OrderDao {
         String sql = "UPDATE orders SET isdel = 1 WHERE orderid = ?";
         try (
                 Connection conn = DBHelper.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setLong(1, order.getOrderid()); // 使用 setLong
-
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setLong(1, order.getOrderid());
             int affectedRows = pstmt.executeUpdate();
-            System.out.printf("成功软删除%d条数据。\n", affectedRows);
 
+            System.out.printf("成功软删除%d条数据。\n", affectedRows);
+            return affectedRows; // ✅ 返回影响行数
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }
-
-        return 0;
     }
+
 
 }
