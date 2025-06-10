@@ -185,7 +185,6 @@ public class HistoryOrderFrame extends MyFrame {
         OrderDao orderDao = new OrderDaoImp();
         Order order = new Order();
         order.setOrderid(orderId);
-        order.setIsdel(1); // 逻辑删除
         int result = orderDao.remove(order);
 
         if (result > 0) {

@@ -222,6 +222,8 @@ public class CartFrame extends MyFrame {
         order.setOrderid(orderId);
         order.setOrderdate(now);
         order.setAmount(getOrderTotalAmount());
+        System.out.println("当前时间戳：" + now.getTime());
+        System.out.println("当前时间：" + now);
 
         // 下订单时间是数据库自动生成不用设置
         // 创建订单

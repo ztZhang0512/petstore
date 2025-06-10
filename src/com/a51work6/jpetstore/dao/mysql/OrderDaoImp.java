@@ -28,7 +28,7 @@ public class OrderDaoImp implements OrderDao {
                 Order order = new Order();
                 order.setOrderid(rs.getLong("orderid"));
                 order.setUserid(rs.getString("userid"));
-                order.setOrderdate(rs.getDate("orderdate"));
+                order.setOrderdate(rs.getTimestamp("orderdate"));
                 order.setStatus(rs.getInt("status"));
                 order.setAmount(rs.getDouble("amount"));
                 order.setIsdel(rs.getInt("isdel"));
@@ -58,7 +58,7 @@ public class OrderDaoImp implements OrderDao {
                 Order order = new Order();
                 order.setOrderid(rs.getLong("orderid"));
                 order.setUserid(rs.getString("userid"));
-                order.setOrderdate(rs.getDate("orderdate"));
+                order.setOrderdate(rs.getTimestamp("orderdate"));
                 order.setStatus(rs.getInt("status"));
                 order.setAmount(rs.getDouble("amount"));
                 order.setIsdel(rs.getInt("isdel"));
@@ -88,7 +88,7 @@ public class OrderDaoImp implements OrderDao {
                 Order order = new Order();
                 order.setOrderid(rs.getLong("orderid"));
                 order.setUserid(rs.getString("userid"));
-                order.setOrderdate(rs.getDate("orderdate"));
+                order.setOrderdate(rs.getTimestamp("orderdate"));
                 order.setStatus(rs.getInt("status"));
                 order.setAmount(rs.getDouble("amount"));
                 order.setIsdel(rs.getInt("isdel"));
@@ -146,7 +146,7 @@ public class OrderDaoImp implements OrderDao {
                 Order order = new Order();
                 order.setOrderid(rs.getLong("orderid"));
                 order.setUserid(rs.getString("userid"));
-                order.setOrderdate(rs.getDate("orderdate"));
+                order.setOrderdate(rs.getTimestamp("orderdate"));
                 order.setStatus(rs.getInt("status"));
                 order.setAmount(rs.getDouble("amount"));
                 order.setIsdel(rs.getInt("isdel"));

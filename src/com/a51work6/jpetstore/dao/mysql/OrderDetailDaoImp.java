@@ -16,7 +16,7 @@ public class OrderDetailDaoImp implements OrderDetailDao {
 
     @Override
     public List<OrderDetail> findAll() {
-        String sql = "SELECT orderid, productid, quantity, unitcost, isdel FROM orderdetails";
+        String sql = "SELECT orderid, productid, quantity, unitcost FROM orderdetails";
         List<OrderDetail> list = new ArrayList<>();
 
         try (
@@ -30,7 +30,6 @@ public class OrderDetailDaoImp implements OrderDetailDao {
                 detail.setProductid(rs.getString("productid"));
                 detail.setQuantity(rs.getInt("quantity"));
                 detail.setUnitcost(rs.getDouble("unitcost"));
-                detail.setIsdel(rs.getInt("isdel")); // 新增字段赋值
 
                 list.add(detail);
             }
@@ -44,7 +43,7 @@ public class OrderDetailDaoImp implements OrderDetailDao {
 
     @Override
     public OrderDetail findByPK(int orderid, String productid) {
-        String sql = "SELECT orderid, productid, quantity, unitcost, isdel FROM orderdetails WHERE orderid = ? AND productid = ?";
+        String sql = "SELECT orderid, productid, quantity, unitcost FROM orderdetails WHERE orderid = ? AND productid = ?";
         try (
                 Connection conn = DBHelper.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -59,7 +58,6 @@ public class OrderDetailDaoImp implements OrderDetailDao {
                 detail.setProductid(rs.getString("productid"));
                 detail.setQuantity(rs.getInt("quantity"));
                 detail.setUnitcost(rs.getDouble("unitcost"));
-                detail.setIsdel(rs.getInt("isdel"));
 
                 return detail;
             }
@@ -73,7 +71,7 @@ public class OrderDetailDaoImp implements OrderDetailDao {
 
     @Override
     public int create(OrderDetail orderDetail) {
-        String sql = "INSERT INTO orderdetails (orderid, productid, quantity, unitcost, isdel) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO orderdetails (orderid, productid, quantity, unitcost) VALUES (?, ?, ?, ?)";
         try (
                 Connection conn = DBHelper.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -82,7 +80,6 @@ public class OrderDetailDaoImp implements OrderDetailDao {
             pstmt.setString(2, orderDetail.getProductid());
             pstmt.setInt(3, orderDetail.getQuantity());
             pstmt.setDouble(4, orderDetail.getUnitcost());
-            pstmt.setInt(5, 0); // 默认未删除
 
             int affectedRows = pstmt.executeUpdate();
             System.out.printf("成功插入%d条数据。\n", affectedRows);
@@ -97,16 +94,15 @@ public class OrderDetailDaoImp implements OrderDetailDao {
 
     @Override
     public int modify(OrderDetail orderDetail) {
-        String sql = "UPDATE orderdetails SET quantity=?, unitcost=?, isdel=? WHERE orderid=? AND productid=?";
+        String sql = "UPDATE orderdetails SET quantity=?, unitcost=? WHERE orderid=? AND productid=?";
         try (
                 Connection conn = DBHelper.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, orderDetail.getQuantity());
             pstmt.setDouble(2, orderDetail.getUnitcost());
-            pstmt.setInt(3, orderDetail.getIsdel());
-            pstmt.setLong(4, orderDetail.getOrderid()); // 改用 setLong
-            pstmt.setString(5, orderDetail.getProductid());
+            pstmt.setLong(3, orderDetail.getOrderid()); // 改用 setLong
+            pstmt.setString(4, orderDetail.getProductid());
 
             int affectedRows = pstmt.executeUpdate();
             System.out.printf("成功更新%d条数据。\n", affectedRows);
@@ -121,7 +117,7 @@ public class OrderDetailDaoImp implements OrderDetailDao {
 
     @Override
     public List<OrderDetail> findByOrder(long orderid) {
-        String sql = "SELECT orderid, productid, quantity, unitcost, isdel FROM orderdetails WHERE orderid = ? AND isdel = 0";
+        String sql = "SELECT orderid, productid, quantity, unitcost FROM orderdetails WHERE orderid = ?";
         List<OrderDetail> list = new ArrayList<>();
 
         try (
@@ -137,7 +133,6 @@ public class OrderDetailDaoImp implements OrderDetailDao {
                 detail.setProductid(rs.getString("productid"));
                 detail.setQuantity(rs.getInt("quantity"));
                 detail.setUnitcost(rs.getDouble("unitcost"));
-                detail.setIsdel(rs.getInt("isdel"));
 
                 list.add(detail);
             }
@@ -148,27 +143,5 @@ public class OrderDetailDaoImp implements OrderDetailDao {
         return list;
     }
 
-
-
-    @Override
-    public int remove(OrderDetail orderDetail) {
-        String sql = "UPDATE orderdetails SET isdel = 1 WHERE orderid = ? AND productid = ?";
-        try (
-                Connection conn = DBHelper.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setLong(1, orderDetail.getOrderid()); // 改用 setLong
-            pstmt.setString(2, orderDetail.getProductid());
-
-            int affectedRows = pstmt.executeUpdate();
-            System.out.printf("成功软删除%d条数据。\n", affectedRows);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -1;
-        }
-
-        return 0;
-    }
 
 }

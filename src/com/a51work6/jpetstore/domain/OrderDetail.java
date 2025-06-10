@@ -7,15 +7,7 @@ public class OrderDetail {
     private String productid;    // 商品Id
     private int quantity;        // 商品数量
     private double unitcost;     // 单价
-    private int isdel;
 
-    public int getIsdel() {
-        return isdel;
-    }
-
-    public void setIsdel(int isdel) {
-        this.isdel = isdel;
-    }
 
     public long getOrderid() {
         return orderid;

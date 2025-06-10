@@ -15,8 +15,6 @@ public interface OrderDetailDao {
     int create(OrderDetail orderDetail);
     // 修改订单明细信息
     int modify(OrderDetail orderDetail);
-    // 删除订单明细信息
-    int remove(OrderDetail orderDetail);
 
     List<OrderDetail> findByOrder(long orderid);
 
