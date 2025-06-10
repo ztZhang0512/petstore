@@ -17,4 +17,7 @@ public interface OrderDetailDao {
     int modify(OrderDetail orderDetail);
     // 删除订单明细信息
     int remove(OrderDetail orderDetail);
+
+    List<OrderDetail> findByOrder(long orderid);
+
 }

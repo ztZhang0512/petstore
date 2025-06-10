@@ -72,6 +72,36 @@ public class OrderDaoImp implements OrderDao {
         return orderList;
     }
 
+    @Override
+    public List<Order> findHistoryOrdersByUser(String userid) {
+        String sql = "SELECT orderid, userid, orderdate, status, amount, isdel FROM orders WHERE userid = ? AND status = 1 AND isdel = 0";
+        List<Order> orderList = new ArrayList<>();
+
+        try (
+                Connection conn = DBHelper.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setString(1, userid);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setOrderid(rs.getLong("orderid"));
+                order.setUserid(rs.getString("userid"));
+                order.setOrderdate(rs.getDate("orderdate"));
+                order.setStatus(rs.getInt("status"));
+                order.setAmount(rs.getDouble("amount"));
+                order.setIsdel(rs.getInt("isdel"));
+
+                orderList.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return orderList;
+    }
+
 
     @Override
     public int create(Order order) {

@@ -18,4 +18,6 @@ public interface OrderDao {
     int remove(Order order);
 
     List<Order> findPendingOrdersByUser(String userid);
+
+    List<Order> findHistoryOrdersByUser(String userid);
 }

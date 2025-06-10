@@ -171,6 +171,11 @@ public class ProductListFrame extends MyFrame {
         btnPendingOrders.setFont(new Font("微软雅黑", Font.PLAIN, 15));
         buttonPanel.add(btnPendingOrders);
 
+
+        JButton btnHistoryOrders = new JButton("查看历史订单"); // 新增按钮
+        btnHistoryOrders.setFont(new Font("微软雅黑", Font.PLAIN, 15));
+        buttonPanel.add(btnHistoryOrders);
+
         detailPanel.add(buttonPanel);
 
         rightPanel.add(detailPanel, BorderLayout.CENTER);
@@ -203,6 +208,12 @@ public class ProductListFrame extends MyFrame {
             PendingOrderFrame pendingOrderFrame = new PendingOrderFrame(MainApp.accout.getUserid(), this);
             pendingOrderFrame.setVisible(true);
             setVisible(false);
+        });
+
+        // 新增历史订单按钮事件
+        btnHistoryOrders.addActionListener(e -> {
+            HistoryOrderFrame historyOrderFrame = new HistoryOrderFrame(MainApp.accout.getUserid());
+            historyOrderFrame.setVisible(true);
         });
 
         return rightPanel;

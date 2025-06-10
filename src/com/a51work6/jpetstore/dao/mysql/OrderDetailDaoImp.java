@@ -119,6 +119,36 @@ public class OrderDetailDaoImp implements OrderDetailDao {
         return 0;
     }
 
+    @Override
+    public List<OrderDetail> findByOrder(long orderid) {
+        String sql = "SELECT orderid, productid, quantity, unitcost, isdel FROM orderdetails WHERE orderid = ? AND isdel = 0";
+        List<OrderDetail> list = new ArrayList<>();
+
+        try (
+                Connection conn = DBHelper.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)
+        ) {
+            pstmt.setLong(1, orderid);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                OrderDetail detail = new OrderDetail();
+                detail.setOrderid(rs.getLong("orderid"));
+                detail.setProductid(rs.getString("productid"));
+                detail.setQuantity(rs.getInt("quantity"));
+                detail.setUnitcost(rs.getDouble("unitcost"));
+                detail.setIsdel(rs.getInt("isdel"));
+
+                list.add(detail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+
 
     @Override
     public int remove(OrderDetail orderDetail) {
